@@ -60,8 +60,9 @@ sop:{label:'SOP / Operator User Manual',code:'SOP',body:`# Standard Operating Pr
 ## 1. Purpose and Scope
 Describe the system and who this manual is for.
 ## 2. Safety Precautions
-- Follow site LOTO and QHSE procedures.
-- Never bypass an interlock without an approved ECO.
+[!] DANGER: Follow site LOTO and QHSE procedures before touching any field equipment.
+[i] INTERLOCK: Never bypass an interlock without an approved ECO.
+[*] OPERATOR NOTE: Acknowledge all outstanding alarms before starting equipment.
 ## 3. Startup Procedure
 1. Verify all HMI nodes show **Comms OK**.
 2. Acknowledge outstanding alarms.
