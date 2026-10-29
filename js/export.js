@@ -1,0 +1,15 @@
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function md(src){const L=src.split('\n'),cells=l=>l.trim().replace(/^\||\|$/g,'').split(/(?<!\\)\|/).map(s=>s.trim().replace(/\\\|/g,'|'));const inl=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/`(.+?)`/g,'<code>$1</code>').replace(/\\`/g,'`');let o='',i=0,ul=false,ol=false;
+const close=()=>{if(ul){o+='</ul>';ul=false}if(ol){o+='</ol>';ol=false}};
+while(i<L.length){const l=L[i];let m;
+if(/^\s*\|/.test(l)&&/^\s*\|?[\s:|-]+\|?\s*$/.test(L[i+1]||'')&&/-/.test(L[i+1]||'')){close();const h=cells(l);i+=2;let b='';while(i<L.length&&/^\s*\|/.test(L[i])){b+='<tr>'+cells(L[i]).map(c=>'<td>'+inl(c)+'</td>').join('')+'</tr>';i++}o+='<table><thead><tr>'+h.map(c=>'<th>'+inl(c)+'</th>').join('')+'</tr></thead><tbody>'+b+'</tbody></table>';continue}
+if(m=l.match(/^(#{1,4})\s+(.*)/)){close();o+=`<h${m[1].length}>${inl(m[2])}</h${m[1].length}>`}
+else if(m=l.match(/^\s*[-*]\s+(.*)/)){if(!ul){close();o+='<ul>';ul=true}o+='<li>'+inl(m[1])+'</li>'}
+else if(m=l.match(/^\s*\d+\.\s+(.*)/)){if(!ol){close();o+='<ol>';ol=true}o+='<li>'+inl(m[1])+'</li>'}
+else if(l.trim()===''){close()}else{close();o+='<p>'+inl(l)+'</p>'}i++}close();return o}
+const Exp={
+dl(name,text,type='text/plain'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)},
+markdown(a){Exp.dl((a.docId||'doc')+'_Rev'+a.rev+'.md',`<!-- ${a.docId} | Rev ${a.rev} | ${a.status} -->\n`+a.content,'text/markdown')},
+async backup(){const data={};for(const s of DB.S)data[s]=await DB.all(s);Exp.dl('docugenius-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({app:'docugenius',version:1,exported:new Date().toISOString(),data}),'application/json')},
+async restore(file){const j=JSON.parse(await file.text());if(j.app!=='docugenius')throw new Error('Not a DocuGenius backup');let n=0;for(const s of DB.S)for(const v of(j.data[s]||[])){await DB.put(s,v);n++}return n},
+print(a){const d=new Date(a.updated).toISOString().slice(0,10);document.getElementById('printArea').innerHTML=`<table class="tb"><tr><td class="lg" colspan="2">Al Gurg Automation and Controls - Dubai, U.A.E.</td><td class="lg">${esc(a.docId)}</td></tr><tr><td colspan="2"><b>${esc(a.title)}</b></td><td>Rev: ${a.rev}</td></tr><tr><td>Author: ${esc(a.author||'-')}</td><td>Status: ${esc(a.status)}</td><td>Date: ${d}</td></tr></table>${md(a.content)}<div class="rev"><b>Revision Box</b><table><tr><th>Rev</th><th>Date</th><th>Author</th><th>Reason</th></tr><tr><td>${a.rev}</td><td>${d}</td><td>${esc(a.author||'-')}</td><td>${esc(a.lastReason||'-')}</td></tr></table><table><tr><th>Prepared</th><th>Reviewed</th><th>Approved</th></tr><tr><td><br><br></td><td></td><td></td></tr></table></div>`;const t=document.title;document.title=a.docId+'_Rev'+a.rev;print();document.title=t}};
