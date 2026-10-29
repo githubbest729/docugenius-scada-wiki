@@ -69,16 +69,40 @@
  ],
  "shortcuts": [
   {
-   "name": "New Spec Doc",
-   "url": "./index.html?a=new"
+   "name": "New Spec Document",
+   "short_name": "New Spec",
+   "url": "./index.html?action=new-spec",
+   "icons": [
+    {
+     "src": "icons/shortcut-new.png",
+     "sizes": "96x96",
+     "type": "image/png"
+    }
+   ]
   },
   {
-   "name": "Import IO Map",
-   "url": "./index.html?a=import"
+   "name": "Import Tag List / IO Map",
+   "short_name": "Import Tags",
+   "url": "./index.html?action=import-tags",
+   "icons": [
+    {
+     "src": "icons/shortcut-import.png",
+     "sizes": "96x96",
+     "type": "image/png"
+    }
+   ]
   },
   {
-   "name": "Audit Logs",
-   "url": "./index.html?a=audit"
+   "name": "Audit Trail & ECOs",
+   "short_name": "Audit",
+   "url": "./index.html?action=audit",
+   "icons": [
+    {
+     "src": "icons/shortcut-audit.png",
+     "sizes": "96x96",
+     "type": "image/png"
+    }
+   ]
   }
  ],
  "screenshots": [
@@ -94,5 +118,26 @@
    "type": "image/png",
    "form_factor": "narrow"
   }
- ]
+ ],
+ "file_handlers": [
+  {
+   "action": "./index.html?action=open-file",
+   "name": "PLC tag list / vault",
+   "accept": {
+    "text/csv": [
+     ".csv"
+    ],
+    "application/json": [
+     ".json"
+    ]
+   },
+   "launch_type": "single-client"
+  }
+ ],
+ "launch_handler": {
+  "client_mode": [
+   "navigate-existing",
+   "auto"
+  ]
+ }
 }

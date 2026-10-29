@@ -7,4 +7,6 @@ const area=a=>{a=String(a).trim();if(!/^[0-4]\d{4,5}$/.test(a))return'';const n=
 function parse(text,name){const rows=/\.json$/i.test(name)||/^\s*[\[{]/.test(text)?json(text):csv(text);if(!rows.length)return rows;const ai=rows[0].findIndex(h=>/addr|register/i.test(h));
 if(ai>=0&&!rows[0].some(h=>/modbus/i.test(h))&&rows.slice(1).some(r=>area(r[ai]))){rows[0].push('Modbus Area');for(let i=1;i<rows.length;i++)rows[i].push(area(rows[i][ai]))}return rows}
 const toMd=rows=>{if(!rows.length)return'';const e=s=>String(s).replace(/\|/g,'\\|').replace(/\n/g,' ').trim();return'| '+rows[0].map(e).join(' | ')+' |\n|'+rows[0].map(()=>'---').join('|')+'|\n'+rows.slice(1).map(r=>'| '+rows[0].map((_,i)=>e(r[i]==null?'':r[i])).join(' | ')+' |').join('\n')};
-return{parse,toMd}})();
+const pick=()=>new Promise(res=>{const fb=()=>{const i=document.createElement('input');i.type='file';i.accept='.json,.csv,.txt';i.onchange=()=>res(i.files[0]||null);i.click()};
+if('showOpenFilePicker' in window){window.showOpenFilePicker({multiple:false,types:[{description:'Tag lists & vault backups',accept:{'application/json':['.json'],'text/csv':['.csv'],'text/plain':['.txt']}}]}).then(([h])=>h.getFile()).then(res).catch(e=>e&&e.name==='AbortError'?res(null):fb())}else fb()});
+return{parse,toMd,pick}})();

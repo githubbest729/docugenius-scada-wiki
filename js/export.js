@@ -9,9 +9,11 @@ else if(m=l.match(/^\s*[-*]\s+(.*)/)){if(!ul){close();o+='<ul>';ul=true}o+='<li>
 else if(m=l.match(/^\s*\d+\.\s+(.*)/)){if(!ol){close();o+='<ol>';ol=true}o+='<li>'+inl(m[1])+'</li>'}
 else if(l.trim()===''){close()}else{close();o+='<p>'+inl(l)+'</p>'}i++}close();return o}
 const Exp={
-dl(name,text,type='text/plain'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)},
-markdown(a){Exp.dl((a.docId||'doc')+'_Rev'+a.rev+'.md',`<!-- ${a.docId} | Rev ${a.rev} | ${a.status} -->\n`+a.content,'text/markdown')},
-async backup(){const data={};for(const s of DB.S)data[s]=await DB.all(s);Exp.dl('docugenius-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({app:'docugenius',version:1,exported:new Date().toISOString(),data}),'application/json')},
+async dl(name,data,type='text/plain'){const blob=data instanceof Blob?data:new Blob([data],{type});
+if('showSaveFilePicker' in window){try{const ext='.'+name.split('.').pop();const h=await window.showSaveFilePicker({suggestedName:name,types:[{description:ext.slice(1).toUpperCase()+' file',accept:{[type]:[ext]}}]});const w=await h.createWritable();await w.write(blob);await w.close();return'picker'}catch(e){if(e&&e.name==='AbortError')return'cancel'}}
+try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch(e){}return'download'},
+markdown(a){return Exp.dl((a.docId||'doc')+'_Rev'+a.rev+'.md',`<!-- ${a.docId} | Rev ${a.rev} | ${a.status} -->\n`+a.content,'text/markdown')},
+async backup(){const data={};for(const s of DB.S)data[s]=await DB.all(s);return Exp.dl('docugenius-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({app:'docugenius',version:1,exported:new Date().toISOString(),data}),'application/json')},
 async restore(file){const j=JSON.parse(await file.text());if(j.app!=='docugenius')throw new Error('Not a DocuGenius backup');let n=0;for(const s of DB.S)for(const v of(j.data[s]||[])){await DB.put(s,v);n++}return n},
 print(a){const d=new Date(a.updated).toISOString().slice(0,10),P=esc(localStorage.getItem('dg-project')||'SCADA Project');
 const hd=`<table class="tbk"><tr><td rowspan="2" class="lg">AL GURG<br>Automation &amp; Controls<br><small>DUBAI, U.A.E.</small></td><td colspan="2"><small>PROJECT NAME</small><br><b>${P}</b></td><td><small>DOCUMENT VAULT ID</small><br><b>${esc(a.docId)}</b></td></tr><tr><td colspan="2"><small>TITLE</small><br><b>${esc(a.title)}</b></td><td><small>REVISION / STATUS</small><br><b>Rev ${a.rev} - ${esc(a.status).toUpperCase()}</b></td></tr></table>`;
