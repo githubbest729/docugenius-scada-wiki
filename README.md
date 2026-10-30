@@ -9,7 +9,7 @@
 [![Target Platform](https://img.shields.io/badge/Platform-Wonderware%20%7C%20Schneider-EF4444?style=for-the-badge)](https://www.aveva.com/)
 
 <p align="center">
-  <b>Purpose-built for Senior SCADA & Automation Engineers at Al Gurg Automation & Controls (Dubai, U.A.E.)</b><br>
+  <b>Purpose-built for Senior SCADA & Automation Engineers at Dubai, U.A.E.)</b><br>
   Delivering 100% offline, air-gapped lifecycle management for SCADA configurations, specifications, and operator manuals.
 </p>
 
