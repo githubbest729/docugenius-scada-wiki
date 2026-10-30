@@ -1,5 +1,5 @@
-const V='dg-v2',DYN='dg-dyn-v2';
-const STATIC=['./','index.html','offline.html','manifest.webmanifest','favicon.svg','css/styles.css','css/print-dossier.css','js/app.js','js/db.js','js/templates.js','js/parsers.js','js/export.js','js/pwa-controller.js','icons/icon-192.png','icons/icon-512.png'];
+const V='dg-v3',DYN='dg-dyn-v3';
+const STATIC=['./','index.html','offline.html','manifest.webmanifest','favicon.svg','css/styles.css','css/print-dossier.css','js/app.js','js/db.js','js/templates.js','js/seed.js','js/parsers.js','js/export.js','js/pwa-controller.js','icons/icon-192.png','icons/icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(STATIC)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V&&x!==DYN).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET')return;const u=new URL(r.url);if(u.origin!==location.origin)return;

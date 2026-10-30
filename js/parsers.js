@@ -9,4 +9,19 @@ if(ai>=0&&!rows[0].some(h=>/modbus/i.test(h))&&rows.slice(1).some(r=>area(r[ai])
 const toMd=rows=>{if(!rows.length)return'';const e=s=>String(s).replace(/\|/g,'\\|').replace(/\n/g,' ').trim();return'| '+rows[0].map(e).join(' | ')+' |\n|'+rows[0].map(()=>'---').join('|')+'|\n'+rows.slice(1).map(r=>'| '+rows[0].map((_,i)=>e(r[i]==null?'':r[i])).join(' | ')+' |').join('\n')};
 const pick=()=>new Promise(res=>{const fb=()=>{const i=document.createElement('input');i.type='file';i.accept='.json,.csv,.txt';i.onchange=()=>res(i.files[0]||null);i.click()};
 if('showOpenFilePicker' in window){window.showOpenFilePicker({multiple:false,types:[{description:'Tag lists & vault backups',accept:{'application/json':['.json'],'text/csv':['.csv'],'text/plain':['.txt']}}]}).then(([h])=>h.getFile()).then(res).catch(e=>e&&e.name==='AbortError'?res(null):fb())}else fb()});
-return{parse,toMd,pick}})();
+
+const PFX={DWTC:'DWTC-CHILLER-01',FUJ:'FUJAIRAH-TANK-104',TKM:'TURKMEN-LPG-RTU',KAY:'KAYLTION-AROM-01',DIB:'DIBBA-TUNNEL-VENT',HLW:'DM-HLWTP-DEWATER',STP:'PWSD-STP-01',ESI:'ESI-BILLET-CB',ADI:'ADIC-SILO-AER'};
+const KW=[[/chill|chw|(^|_)ch\d/i,PFX.DWTC],[/tank|atg|radar|ovfl/i,PFX.FUJ],[/lpg|rtu|esd/i,PFX.TKM],[/jet|tunnel|nox|visib/i,PFX.DIB],[/sludge|neutral|dosing|precip/i,PFX.HLW],[/billet|coolbed|pusher|runout|quench/i,PFX.ESI],[/silo|bucket|grain|aerat|elevator/i,PFX.ADI]];
+const assign=(n,d)=>{const m=/^([A-Za-z]+)_/.exec(n);if(m&&PFX[m[1].toUpperCase()])return PFX[m[1].toUpperCase()];for(const[r,s]of KW)if(r.test(n+' '+d))return s;return'UNASSIGNED'};
+const AL={tag:['tagname','name','tag','symbol'],type:['datatype','datatypename','type'],addr:['logicaladdress','address','ioaddress','itemname','modbusregister','modbus','register','offset','addr'],unit:['engunits','units','unit','eu','engineeringunits'],desc:['comment','description','desc'],ll:['lolovalue','loloalarmvalue','lolo','ll','lowlow','lowlowlimit'],l:['lovalue','loalarmvalue','lo','l','low','lowlimit'],h:['hivalue','hialarmvalue','hi','h','high','highlimit'],hh:['hihivalue','hihialarmvalue','hihi','hh','highhigh','highhighlimit']};
+const nk=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+const NT=(x,sec)=>{const s=nk(x||sec||'');if(/disc|bool|bit/.test(s))return'BOOL';if(/msg|message|string/.test(s))return'MESSAGE';if(/real|float/.test(s))return'REAL';if(/int|word/.test(s))return'DINT';return x?String(x).toUpperCase():'REAL'};
+function tags(text,name){const t=text.trim(),rows=/^[\[{]/.test(t)?json(t):csv(text),out=[];let fmt='Galaxy / generic',sec='',hdr=null,it=false;
+for(const r of rows){if(r.length===1&&/^:/.test(r[0])){if(!/^:mode/i.test(r[0])){sec=r[0].slice(1).trim();hdr=null;it=true}continue}if(/^remark$/i.test(r[0]))continue;if(!hdr){hdr=r.map(nk);continue}
+const o={};hdr.forEach((k,i)=>o[k]=(r[i]||'').trim());if(o.scope!==undefined&&o.type!==undefined){fmt='Rockwell Logix';if(o.type.toUpperCase()!=='TAG')continue}if(hdr.includes('logicaladdress'))fmt='Siemens TIA';
+const g=k=>{for(const a of AL[k])if(o[a]!==undefined&&o[a]!=='')return o[a];return''},tg=g('tag');if(!tg)continue;const d=g('desc');
+out.push({tag:tg,desc:d,type:NT(g('type'),sec),addr:fmt==='Rockwell Logix'?(o.scope?'Program:'+o.scope+'.':'')+tg:g('addr'),unit:g('unit'),ll:g('ll'),l:g('l'),h:g('h'),hh:g('hh'),sub:assign(tg,d+' '+sec)})}
+if(it)fmt='Wonderware InTouch DB Dump';if(!out.length)throw new Error('No tags recognised in '+name);return{fmt,list:out}}
+const tagsMd=rows=>{const c={};rows.forEach(r=>c[r[9]]=(c[r[9]]||0)+1);const e=s=>String(s).replace(/\|/g,'/').replace(/\n/g,' ');
+return'## Summary\n| Subsystem | Tags |\n|---|---|\n'+Object.entries(c).map(([k,v])=>'| '+e(k)+' | '+v+' |').join('\n')+'\n\n## Tag Schedule\n| Tag Name | Description | Data Type | IO Address | Units | LL | L | H | HH | Subsystem |\n|---|---|---|---|---|---|---|---|---|---|\n'+rows.map(r=>'| '+r.map(e).join(' | ')+' |').join('\n')};
+return{parse,toMd,pick,tags,tagsMd,PFX}})();
