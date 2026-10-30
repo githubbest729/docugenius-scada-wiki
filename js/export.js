@@ -1,4 +1,4 @@
-const LOGO = '<svg width="44" height="44" viewBox="0 0 64 64" aria-label="Al Gurg emblem" style="flex:none"><circle cx="32" cy="32" r="29" fill="none" stroke="#000" stroke-width="3"/><path d="M14 45 32 13l18 32h-8L32 28 22 45z" fill="#000"/><rect x="20" y="48" width="24" height="4" fill="#000"/></svg>';
+const LOGO = '<svg width="40" height="40" viewBox="0 0 64 64" aria-label="Al Gurg emblem" style="flex:none"><circle cx="32" cy="32" r="29" fill="none" stroke="#000" stroke-width="3"/><path d="M14 45 32 13l18 32h-8L32 28 22 45z" fill="#000"/><rect x="20" y="48" width="24" height="4" fill="#000"/></svg>';
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 function md(src) {
@@ -51,7 +51,7 @@ function md(src) {
       if (!ul) { close(); o += '<ul>'; ul = true; }
       o += '<li>' + inl(m[1]) + '</li>';
     } else if (m = l.match(/^\s*\d+\.\s+(.*)/)) {
-      if (!ol) { close(); o += '<ol'; ol = true; }
+      if (!ol) { close(); o += '<ol>'; ol = true; }
       o += '<li>' + inl(m[1]) + '</li>';
     } else if (l.trim() === '') {
       close();
@@ -140,7 +140,7 @@ const Exp = {
     const cli = esc(a.client || 'Al Gurg Automation & Controls');
     const prep = esc(String(a.author || '').replace(/\s*\(.*\)\s*$/, '') || 'AGAC SCADA Lead');
 
-    // Page 1 Full Engineering Title Block
+    // Title Block
     const coverTitleBlock = `
       <table class="tbk cover">
         <tr>
@@ -154,8 +154,8 @@ const Exp = {
               </div>
             </div>
           </td>
-          <td><small>CLIENT</small><b>${cli}</b></td>
-          <td class="r"><small>DOCUMENT ID</small><b class="mono">${esc(a.docId)}</b></td>
+          <td style="width:34%"><small>CLIENT</small><b>${cli}</b></td>
+          <td class="r" style="width:28%"><small>DOCUMENT ID</small><b class="mono">${esc(a.docId)}</b></td>
         </tr>
         <tr>
           <td><small>PROJECT NAME</small><b>${proj}</b></td>
@@ -167,41 +167,20 @@ const Exp = {
         </tr>
       </table>`;
 
-    // Running Header for Subsequent Pages
-    const runningHeader = `
-      <tr class="running-header-row">
-        <td colspan="100%">
-          <div class="running-header">
-            <span class="rh-brand">AL GURG AUTOMATION &amp; CONTROLS</span>
-            <span class="rh-doc">${esc(a.docId)} &middot; ${esc(a.title)}</span>
-            <span class="rh-rev">Rev ${esc(a.rev)}</span>
-          </div>
-        </td>
-      </tr>`;
-
     const al = x => [x[11], x[12], x[13], x[14]].map(v => (v === '' || v == null ? '-' : esc(v))).join(' / ');
     
-    // Proportional column allocations for I/O Schedules (100% total)
+    // I/O Table
     const ioTable = rows => `
       <table class="io">
-        <colgroup>
-          <col style="width:18%">
-          <col style="width:28%">
-          <col style="width:8%">
-          <col style="width:12%">
-          <col style="width:6%">
-          <col style="width:14%">
-          <col style="width:14%">
-        </colgroup>
         <thead>
           <tr>
-            <th>TAG NAME</th>
-            <th>DESCRIPTION</th>
-            <th>DATA TYPE</th>
-            <th class="r">IO ADDRESS / MODBUS</th>
-            <th>UNITS</th>
-            <th>ALARM LIMITS (LL / L / H / HH)</th>
-            <th>SUBSYSTEM / AREA</th>
+            <th style="width:18%">TAG NAME</th>
+            <th style="width:28%">DESCRIPTION</th>
+            <th style="width:8%">DATA TYPE</th>
+            <th style="width:12%" class="r">IO ADDRESS / MODBUS</th>
+            <th style="width:6%">UNITS</th>
+            <th style="width:14%">ALARM LIMITS (LL / L / H / HH)</th>
+            <th style="width:14%">SUBSYSTEM / AREA</th>
           </tr>
         </thead>
         <tbody>
@@ -222,7 +201,7 @@ const Exp = {
       ? md(a.narr || '') + ioTable(a.grid.rows)
       : md(a.content || '');
 
-    // Final Sign-Off Matrix with clean date rules
+    // Sign-Off Block
     const signOffBlock = `
       <div class="signoff-wrapper">
         <p class="rv"><b>Revision Note:</b> Rev ${esc(a.rev)} - ${esc(a.lastReason || 'As-built update and baseline verification')}</p>
@@ -268,42 +247,17 @@ const Exp = {
         </div>
       </div>`;
 
-    // Dynamic @page rule
-    const pageStyle = `
-      @page {
-        size: A4 ${orientation};
-        margin: ${margins};
-      }`;
-
     let styleEl = document.getElementById('pgstyle');
     if (!styleEl) {
       styleEl = document.createElement('style');
       styleEl.id = 'pgstyle';
       document.head.appendChild(styleEl);
     }
-    styleEl.textContent = pageStyle;
+    styleEl.textContent = `@page { size: A4 ${orientation}; margin: ${margins}; }`;
 
     const pa = document.getElementById('printArea');
     pa.className = isIO ? 'print-landscape' : 'print-portrait';
-
-    // The Master Sheet structure ensures the running header renders properly across all pages
-    pa.innerHTML = `
-      <table class="master-sheet">
-        <thead>
-          ${runningHeader}
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              ${coverTitleBlock}
-              <div class="body">
-                ${bodyContent}
-              </div>
-              ${signOffBlock}
-            </td>
-          </tr>
-        </tbody>
-      </table>`;
+    pa.innerHTML = coverTitleBlock + `<div class="body">${bodyContent}</div>` + signOffBlock;
 
     const origTitle = document.title;
     document.title = (a.docId || 'Document') + '_Rev' + a.rev;
