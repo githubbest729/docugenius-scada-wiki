@@ -1,7 +1,16 @@
 /* DocuGenius print dossier - Industrial Grade */
+
+/* Allow dynamic orientation via JS or browser print settings */
 @page {
-  size: A4 portrait;
-  margin: 12mm 12mm;
+  size: auto;
+  margin: 10mm 12mm;
+}
+
+/* Force landscape automatically when .print-landscape is present */
+@media print {
+  #printArea.print-landscape {
+    font-size: 8pt;
+  }
 }
 
 html, body {
@@ -24,13 +33,9 @@ html, body {
   display: block !important;
   width: 100% !important;
   box-sizing: border-box !important;
-  font: 9pt/1.35 Arial, Helvetica, sans-serif;
+  font: 8.5pt/1.35 Arial, Helvetica, sans-serif;
   color: #000;
   background: #fff;
-}
-
-#printArea.print-landscape {
-  font-size: 8pt;
 }
 
 /* Engineering Title Block */
@@ -44,7 +49,7 @@ html, body {
 
 .tbk td, .tbk th {
   border: 1pt solid #000;
-  padding: 3px 6px;
+  padding: 4px 6px;
   font-size: 8pt;
   color: #000;
   background: #fff;
@@ -57,7 +62,7 @@ html, body {
   font: 700 6pt Arial, sans-serif;
   letter-spacing: 0.06em;
   color: #000;
-  margin-bottom: 1px;
+  margin-bottom: 2px;
   text-transform: uppercase;
 }
 
@@ -144,7 +149,7 @@ html, body {
 
 .body th, .body td {
   border: 0.75pt solid #000;
-  padding: 3px 5px;
+  padding: 4px 6px;
   font-size: 7.5pt;
   color: #000 !important;
   background: #fff !important;
@@ -166,6 +171,10 @@ html, body {
   display: table-header-group;
 }
 
+.body tbody {
+  display: table-row-group;
+}
+
 .body td.num {
   text-align: right;
   font-family: Consolas, monospace;
@@ -175,12 +184,13 @@ html, body {
 .pill, code, .body code {
   background: #fff !important;
   color: #000 !important;
-  border: 0.75pt solid #000 !important;
+  border: 0.75pt solid #555 !important;
   font-family: Consolas, monospace;
   font-size: 7.5pt;
-  border-radius: 2px;
-  padding: 0 3px;
+  border-radius: 3px;
+  padding: 1px 5px;
   display: inline-block;
+  white-space: nowrap;
 }
 
 /* Callout Alerts */
@@ -213,20 +223,35 @@ html, body {
   margin: 4pt 0 6pt;
 }
 
+.io thead {
+  display: table-header-group;
+}
+
+.io tbody {
+  display: table-row-group;
+}
+
+.io tr {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+  break-after: auto;
+  page-break-after: auto;
+}
+
 .io th, .io td {
   border: 0.75pt solid #000;
-  padding: 3px 4px;
+  padding: 4px 6px;
   font-size: 7.5pt;
   color: #000;
   background: #fff;
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .io th {
   background: #f0f0f0 !important;
   font-weight: 700;
-  font-size: 6.5pt;
+  font-size: 6.8pt;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -236,7 +261,8 @@ html, body {
 }
 
 .io td.tag {
-  font: 700 7pt Consolas, monospace;
+  font: 700 7.5pt Consolas, monospace;
+  white-space: nowrap;
 }
 
 .io td.type {
@@ -245,33 +271,26 @@ html, body {
 }
 
 .io td.addr {
-  font: 7pt Consolas, monospace;
+  font: 7.5pt Consolas, monospace;
   text-align: right;
+  white-space: nowrap;
 }
 
 .io td.al {
-  font: 6.5pt Consolas, monospace;
+  font: 7pt Consolas, monospace;
   text-align: center;
+  white-space: nowrap;
 }
 
 .io td.center {
   text-align: center;
 }
 
-.io tr {
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-}
-
-.io thead {
-  display: table-header-group;
-}
-
 /* Document Control & Sign-Off Section */
 .signoff-wrapper {
   page-break-inside: avoid !important;
   break-inside: avoid !important;
-  margin-top: 5mm;
+  margin-top: 6mm;
   width: 100% !important;
 }
 
