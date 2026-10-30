@@ -121,7 +121,7 @@ const Exp = {
   print(a) {
     const isIO = /^AGAC-IO-/i.test(a.docId || '') || a.type === 'IO';
     const orientation = isIO ? 'landscape' : 'portrait';
-    const margins = isIO ? '10mm 10mm' : '12mm 12mm';
+    const margins = isIO ? '8mm 10mm' : '12mm 12mm';
     const d = new Date(a.updated || Date.now()).toISOString().slice(0, 10);
 
     const REL = {
@@ -140,7 +140,6 @@ const Exp = {
     const cli = esc(a.client || 'Al Gurg Automation & Controls');
     const prep = esc(String(a.author || '').replace(/\s*\(.*\)\s*$/, '') || 'AGAC SCADA Lead');
 
-    // Title Block
     const coverTitleBlock = `
       <table class="tbk cover">
         <tr>
@@ -169,16 +168,15 @@ const Exp = {
 
     const al = x => [x[11], x[12], x[13], x[14]].map(v => (v === '' || v == null ? '-' : esc(v))).join(' / ');
     
-    // I/O Table
     const ioTable = rows => `
       <table class="io">
         <thead>
           <tr>
-            <th style="width:18%">TAG NAME</th>
+            <th style="width:17%">TAG NAME</th>
             <th style="width:28%">DESCRIPTION</th>
             <th style="width:8%">DATA TYPE</th>
             <th style="width:12%" class="r">IO ADDRESS / MODBUS</th>
-            <th style="width:6%">UNITS</th>
+            <th style="width:7%">UNITS</th>
             <th style="width:14%">ALARM LIMITS (LL / L / H / HH)</th>
             <th style="width:14%">SUBSYSTEM / AREA</th>
           </tr>
@@ -201,7 +199,6 @@ const Exp = {
       ? md(a.narr || '') + ioTable(a.grid.rows)
       : md(a.content || '');
 
-    // Sign-Off Block
     const signOffBlock = `
       <div class="signoff-wrapper">
         <p class="rv"><b>Revision Note:</b> Rev ${esc(a.rev)} - ${esc(a.lastReason || 'As-built update and baseline verification')}</p>
@@ -253,7 +250,19 @@ const Exp = {
       styleEl.id = 'pgstyle';
       document.head.appendChild(styleEl);
     }
-    styleEl.textContent = `@page { size: A4 ${orientation}; margin: ${margins}; }`;
+    
+    // Explicitly target print media and page rules
+    styleEl.textContent = `
+      @page {
+        size: A4 ${orientation} !important;
+        margin: ${margins} !important;
+      }
+      @media print {
+        #printArea {
+          width: 100% !important;
+        }
+      }
+    `;
 
     const pa = document.getElementById('printArea');
     pa.className = isIO ? 'print-landscape' : 'print-portrait';
