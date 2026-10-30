@@ -1,7 +1,7 @@
 /* DocuGenius Industrial Print Dossier */
 
 @page {
-  size: A4 landscape;
+  size: A4 portrait;
   margin: 10mm 12mm;
 }
 
@@ -25,9 +25,13 @@ html, body {
   display: block !important;
   width: 100% !important;
   box-sizing: border-box !important;
-  font: 9pt/1.35 Arial, Helvetica, sans-serif;
+  font: 8.5pt/1.3 Arial, Helvetica, sans-serif;
   color: #000;
   background: #fff;
+}
+
+#printArea.print-landscape {
+  font-size: 8pt/1.25;
 }
 
 /* Engineering Title Block */
@@ -63,6 +67,14 @@ html, body {
   color: #000;
 }
 
+.tbk td.r {
+  text-align: left;
+}
+
+.tbk .mono {
+  font-family: Consolas, monospace;
+}
+
 .cover td.logo {
   width: 35%;
   vertical-align: middle;
@@ -91,7 +103,7 @@ html, body {
   letter-spacing: 0.03em;
 }
 
-/* Body & Headings */
+/* Document Body Elements */
 .body {
   width: 100% !important;
 }
@@ -106,10 +118,10 @@ html, body {
 }
 
 .body h2 {
-  font-size: 10.5pt;
+  font-size: 10pt;
   border-bottom: 0.75pt solid #000;
   padding-bottom: 1px;
-  margin: 6pt 0 4pt;
+  margin: 6pt 0 3pt;
   page-break-after: avoid !important;
   break-after: avoid !important;
 }
@@ -118,7 +130,7 @@ html, body {
   margin: 2pt 0 4pt;
 }
 
-/* Callout Box */
+/* Callout Alerts */
 .callout, .sopb {
   border: 0.75pt solid #000 !important;
   border-left: 3.5pt solid #000 !important;
@@ -130,16 +142,22 @@ html, body {
   break-inside: avoid !important;
 }
 
-.callout b, .sopb b {
-  font-size: 8pt;
+.callout b, .sopb b, .sopb .crumb {
   color: #000 !important;
+  background: #fff !important;
+  font-size: 8pt;
 }
 
-/* Summary Table */
+.sopb i {
+  color: #000;
+  margin: 0 4px;
+}
+
+/* Standard Tables (e.g. Summary) */
 .body table:not(.io):not(.tbk) {
   border-collapse: collapse;
   width: 100% !important;
-  margin: 4pt 0 6pt;
+  margin: 3pt 0 5pt;
   page-break-inside: avoid !important;
   break-inside: avoid !important;
 }
@@ -148,21 +166,21 @@ html, body {
 .body table:not(.io):not(.tbk) td {
   border: 0.75pt solid #000;
   padding: 3px 5px;
-  font-size: 8pt;
+  font-size: 7.5pt;
+  vertical-align: top;
 }
 
 .body table:not(.io):not(.tbk) th {
   background: #f0f0f0 !important;
   font-weight: 700;
+  text-transform: uppercase;
 }
 
-/* I/O Schedule Table - Eliminates Orphan Duplication */
+/* Dedicated I/O Schedule Table - Bulletproof Chromium Multi-Page Splitting */
 .io {
   width: 100% !important;
   border-collapse: collapse;
   margin: 4pt 0;
-  page-break-inside: auto;
-  break-inside: auto;
 }
 
 .io thead {
@@ -176,24 +194,24 @@ html, body {
 .io tr {
   page-break-inside: avoid !important;
   break-inside: avoid !important;
-  height: 22px;
+  height: 20px;
 }
 
 .io th {
   background: #f0f0f0 !important;
   font-weight: 700;
-  font-size: 7pt;
+  font-size: 6.8pt;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   border: 0.75pt solid #000;
-  padding: 4px 6px;
+  padding: 3.5px 5px;
   text-align: left;
 }
 
 .io td {
   border: 0.75pt solid #000;
-  padding: 3px 6px;
-  font-size: 8pt;
+  padding: 2.5px 5px;
+  font-size: 7.5pt;
   color: #000;
   background: #fff;
   vertical-align: middle;
@@ -202,22 +220,20 @@ html, body {
 .io th.r, .io td.addr {
   text-align: right;
   font-family: Consolas, monospace;
-  font-size: 8pt;
 }
 
 .io td.tag {
-  font: 700 8pt Consolas, monospace;
+  font: 700 7.5pt Consolas, monospace;
   white-space: nowrap;
 }
 
 .io td.type {
-  text-align: center;
   font-family: Consolas, monospace;
-  font-size: 7.5pt;
+  text-align: center;
 }
 
 .io td.al {
-  font: 7.5pt Consolas, monospace;
+  font: 7pt Consolas, monospace;
   text-align: center;
   white-space: nowrap;
 }
@@ -226,17 +242,30 @@ html, body {
   text-align: center;
 }
 
+/* Tag Badges */
+.pill, code, .body code {
+  background: #fff !important;
+  color: #000 !important;
+  border: 0.75pt solid #444 !important;
+  font-family: Consolas, monospace;
+  font-size: 7pt;
+  border-radius: 2px;
+  padding: 0 4px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
 /* Document Control & Sign-Off Section */
 .signoff-wrapper {
   page-break-inside: avoid !important;
   break-inside: avoid !important;
-  margin-top: 6mm;
+  margin-top: 5mm;
   width: 100% !important;
 }
 
 .rv {
   margin: 2mm 0;
-  font-size: 8pt;
+  font-size: 7.5pt;
 }
 
 .signoff h3 {
