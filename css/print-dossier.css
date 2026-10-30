@@ -1,16 +1,8 @@
-/* DocuGenius print dossier - Industrial Grade */
+/* DocuGenius Industrial Print Dossier */
 
-/* Allow dynamic orientation via JS or browser print settings */
 @page {
-  size: auto;
+  size: A4 landscape;
   margin: 10mm 12mm;
-}
-
-/* Force landscape automatically when .print-landscape is present */
-@media print {
-  #printArea.print-landscape {
-    font-size: 8pt;
-  }
 }
 
 html, body {
@@ -33,7 +25,7 @@ html, body {
   display: block !important;
   width: 100% !important;
   box-sizing: border-box !important;
-  font: 8.5pt/1.35 Arial, Helvetica, sans-serif;
+  font: 9pt/1.35 Arial, Helvetica, sans-serif;
   color: #000;
   background: #fff;
 }
@@ -42,9 +34,9 @@ html, body {
 .tbk {
   width: 100% !important;
   border-collapse: collapse;
-  margin: 0 0 5mm 0;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  margin: 0 0 4mm 0;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
 }
 
 .tbk td, .tbk th {
@@ -71,16 +63,8 @@ html, body {
   color: #000;
 }
 
-.tbk td.r {
-  text-align: left;
-}
-
-.tbk .mono {
-  font-family: Consolas, monospace;
-}
-
 .cover td.logo {
-  width: 38%;
+  width: 35%;
   vertical-align: middle;
 }
 
@@ -107,177 +91,133 @@ html, body {
   letter-spacing: 0.03em;
 }
 
-/* Document Body Elements */
+/* Body & Headings */
 .body {
   width: 100% !important;
-}
-
-.body h1, .body h2, .body h3, .body h4 {
-  color: #000;
-  break-after: avoid;
-  page-break-after: avoid;
-  margin-top: 8pt;
-  margin-bottom: 4pt;
 }
 
 .body h1 {
   font-size: 13pt;
   border-bottom: 1.25pt solid #000;
   padding-bottom: 2px;
+  margin: 6pt 0 4pt;
+  page-break-after: avoid !important;
+  break-after: avoid !important;
 }
 
 .body h2 {
   font-size: 10.5pt;
   border-bottom: 0.75pt solid #000;
   padding-bottom: 1px;
-}
-
-.body h3 {
-  font-size: 9.5pt;
+  margin: 6pt 0 4pt;
+  page-break-after: avoid !important;
+  break-after: avoid !important;
 }
 
 .body p {
-  margin: 3pt 0 5pt;
+  margin: 2pt 0 4pt;
 }
 
-/* Standard Tables */
-.body table {
-  border-collapse: collapse;
-  width: 100% !important;
-  margin: 5pt 0;
-}
-
-.body th, .body td {
-  border: 0.75pt solid #000;
-  padding: 4px 6px;
-  font-size: 7.5pt;
-  color: #000 !important;
-  background: #fff !important;
-  vertical-align: top;
-}
-
-.body th {
-  background: #f0f0f0 !important;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.body tr {
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-}
-
-.body thead {
-  display: table-header-group;
-}
-
-.body tbody {
-  display: table-row-group;
-}
-
-.body td.num {
-  text-align: right;
-  font-family: Consolas, monospace;
-}
-
-/* Badges & Monospace Tags */
-.pill, code, .body code {
-  background: #fff !important;
-  color: #000 !important;
-  border: 0.75pt solid #555 !important;
-  font-family: Consolas, monospace;
-  font-size: 7.5pt;
-  border-radius: 3px;
-  padding: 1px 5px;
-  display: inline-block;
-  white-space: nowrap;
-}
-
-/* Callout Alerts */
+/* Callout Box */
 .callout, .sopb {
   border: 0.75pt solid #000 !important;
   border-left: 3.5pt solid #000 !important;
   background: #fff !important;
   color: #000 !important;
   padding: 4pt 6pt;
-  margin: 5pt 0;
-  break-inside: avoid;
-  page-break-inside: avoid;
+  margin: 4pt 0;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
 }
 
-.callout b, .sopb b, .sopb .crumb {
+.callout b, .sopb b {
+  font-size: 8pt;
   color: #000 !important;
-  background: #fff !important;
+}
+
+/* Summary Table */
+.body table:not(.io):not(.tbk) {
+  border-collapse: collapse;
+  width: 100% !important;
+  margin: 4pt 0 6pt;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+.body table:not(.io):not(.tbk) th,
+.body table:not(.io):not(.tbk) td {
+  border: 0.75pt solid #000;
+  padding: 3px 5px;
   font-size: 8pt;
 }
 
-.sopb i {
-  color: #000;
-  margin: 0 4px;
+.body table:not(.io):not(.tbk) th {
+  background: #f0f0f0 !important;
+  font-weight: 700;
 }
 
-/* Dedicated I/O Schedule Table */
+/* I/O Schedule Table - Eliminates Orphan Duplication */
 .io {
   width: 100% !important;
   border-collapse: collapse;
-  margin: 4pt 0 6pt;
+  margin: 4pt 0;
+  page-break-inside: auto;
+  break-inside: auto;
 }
 
 .io thead {
-  display: table-header-group;
+  display: table-header-group !important;
 }
 
 .io tbody {
-  display: table-row-group;
+  display: table-row-group !important;
 }
 
 .io tr {
-  break-inside: avoid !important;
   page-break-inside: avoid !important;
-  break-after: auto;
-  page-break-after: auto;
-}
-
-.io th, .io td {
-  border: 0.75pt solid #000;
-  padding: 4px 6px;
-  font-size: 7.5pt;
-  color: #000;
-  background: #fff;
-  text-align: left;
-  vertical-align: middle;
+  break-inside: avoid !important;
+  height: 22px;
 }
 
 .io th {
   background: #f0f0f0 !important;
   font-weight: 700;
-  font-size: 6.8pt;
+  font-size: 7pt;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+  border: 0.75pt solid #000;
+  padding: 4px 6px;
+  text-align: left;
 }
 
-.io th.r {
+.io td {
+  border: 0.75pt solid #000;
+  padding: 3px 6px;
+  font-size: 8pt;
+  color: #000;
+  background: #fff;
+  vertical-align: middle;
+}
+
+.io th.r, .io td.addr {
   text-align: right;
+  font-family: Consolas, monospace;
+  font-size: 8pt;
 }
 
 .io td.tag {
-  font: 700 7.5pt Consolas, monospace;
+  font: 700 8pt Consolas, monospace;
   white-space: nowrap;
 }
 
 .io td.type {
-  font-family: Consolas, monospace;
   text-align: center;
-}
-
-.io td.addr {
-  font: 7.5pt Consolas, monospace;
-  text-align: right;
-  white-space: nowrap;
+  font-family: Consolas, monospace;
+  font-size: 7.5pt;
 }
 
 .io td.al {
-  font: 7pt Consolas, monospace;
+  font: 7.5pt Consolas, monospace;
   text-align: center;
   white-space: nowrap;
 }
@@ -295,8 +235,8 @@ html, body {
 }
 
 .rv {
-  margin: 3mm 0 2mm;
-  font-size: 7.5pt;
+  margin: 2mm 0;
+  font-size: 8pt;
 }
 
 .signoff h3 {
