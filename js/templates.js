@@ -56,23 +56,23 @@ Project: ____ Site: ____ Date: ____
 | 3.1 | High-high level | Alarm + pump trip | | |
 Client: ______ Contractor: ______
 `},
-sop:{label:'SOP / Operator User Manual',code:'SOP',body:`# Standard Operating Procedure
+sop:{label:'SOP / Operator Manual (structured)',code:'SOP',body:`# Standard Operating Procedure - Start Pump P-101
 ## 1. Purpose and Scope
-Describe the system and who this manual is for.
-## 2. Safety Precautions
-[!] DANGER: Follow site LOTO and QHSE procedures before touching any field equipment.
-[i] INTERLOCK: Never bypass an interlock without an approved ECO.
-[*] OPERATOR NOTE: Acknowledge all outstanding alarms before starting equipment.
-## 3. Startup Procedure
-1. Verify all HMI nodes show **Comms OK**.
-2. Acknowledge outstanding alarms.
-3. Start equipment from the overview screen.
-## 4. Troubleshooting
-| Symptom | Probable Cause | Action |
+Defines how a plant operator starts pump P-101 from the HMI and what the system must do in response.
+## 2. Operating Procedure
+### Step 1. Start pump P-101
+>> PREREQ: Pump P-101 will not start unless Suction Valve XV-101 is 100% OPEN and no trip is latched.
+>> HMI: Main Menu > Pump Station 1 > Pump Overview > P-101 Popup
+[!] DANGER: Rotating equipment and high voltage. Confirm LOTO is removed and guards are fitted.
+[*] OPERATOR ACTION: Select AUTO, enter the speed set-point (30-100 %), click START and confirm the dialogue.
+[i] INTERLOCK: Low suction pressure or motor overload trips the pump and latches FAULT.
+>> EXPECT: Status tag changes from GREY (Stopped) to SOLID GREEN (Running) within 3 seconds.
+## 3. Alarm Response Card
+| Alarm | Priority | Operator action |
 |---|---|---|
-| Tag quality BAD | Driver/PLC offline | Check OPC server and network |
-## 5. Contacts
-| Role | Name | Phone |
-|---|---|---|
-| SCADA Engineer | | |
+| P-101 Fault | High | Check local panel, start standby pump P-102 |
+| Suction pressure low | Critical | Confirm XV-101 position, do not restart until cleared |
+## 4. Failover and Disaster Recovery
+1. Confirm the backup SCADA node shows GREEN on the System overview.
+[*] OPERATOR ACTION: Log the failover and notify the Lead SCADA Engineer.
 `}};

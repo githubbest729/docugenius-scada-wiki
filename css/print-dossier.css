@@ -1,10 +1,24 @@
-
-@page{size:A4;margin:12mm}@page{@bottom-right{content:"Sheet " counter(page) " of " counter(pages);font:8pt Arial,sans-serif;color:#000}@bottom-left{content:"Al Gurg Automation and Controls - Controlled Document";font:8pt Arial,sans-serif;color:#000}}
-html,body{background:#fff!important;color:#000!important;height:auto!important}#titlebar,#layout,#pal,#toasts{display:none!important}
-#printArea{display:block!important;font:10pt/1.45 Arial,Helvetica,sans-serif;color:#000}#printArea::before{content:"";position:fixed;inset:0;border:1.5pt solid #000;pointer-events:none}
-.sheet{width:100%;border-collapse:collapse}.sheet>thead{display:table-header-group}.sheet>tfoot{display:table-footer-group}.sheet>thead>tr>td,.sheet>tfoot>tr>td,.sheet>tbody>tr>td{border:0;padding:0;background:#fff}.sheet>tbody>tr>td.body{padding:4mm 3mm}
-.tbk{width:100%;border-collapse:collapse;margin:0}.tbk td,.tbk th{border:1pt solid #000;padding:3px 7px;font-size:9pt;color:#000;background:#fff;text-align:left;vertical-align:top}.tbk small{font-size:6.5pt;letter-spacing:.06em;color:#000}.tbk .lg{font-weight:700;font-size:11pt;width:30%}.tbk.sg th{font-size:7.5pt;text-transform:uppercase;letter-spacing:.05em}.tbk.sg td{height:11mm}
-.body table{border-collapse:collapse;width:100%;margin:6pt 0}.body th,.body td{border:.75pt solid #000;padding:2px 5px;font-size:8.5pt;color:#000!important;background:#fff!important;position:static}.body th{background:#e5e5e5!important;font-weight:700}.body tr{page-break-inside:avoid}.body thead{display:table-header-group}
-.body h1,.body h2,.body h3{color:#000;page-break-after:avoid}.body h1{font-size:15pt;border-bottom:1.5pt solid #000}.body h2{font-size:12pt;border-bottom:.75pt solid #000}
-.pill,code,.body code{background:#fff!important;color:#000!important;border:.75pt solid #000!important;font-family:Consolas,monospace;border-radius:2px;padding:0 3px}.body td.num{text-align:right;font-family:Consolas,monospace}
-.callout{border:1pt solid #000;border-left:4pt solid #000;background:#fff!important;color:#000;padding:4pt 8pt;margin:6pt 0;page-break-inside:avoid}.callout b{color:#000!important}.rv{margin-top:8mm;font-size:9pt}
+/* DocuGenius print dossier. Orientation, margins, running header and page numbers are injected per document into <style id="pgstyle"> by Exp.print(). */
+@page{size:A4 portrait;margin:15mm 12mm}
+html,body{background:#fff!important;color:#000!important;height:auto!important;min-height:0!important;overflow:visible!important}
+#titlebar,#layout,#pal,#toasts,#modal,#installBtn{display:none!important}
+#printArea{display:block!important;height:auto;overflow:visible;font:9.5pt/1.4 Arial,Helvetica,sans-serif;color:#000}
+#printArea.print-landscape{font-size:8.5pt}
+/* cover title block (page 1 only: it is in the normal flow, not a repeating header) */
+.tbk{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 5mm}
+.tbk td,.tbk th{border:1pt solid #000;padding:3px 7px;font-size:9pt;color:#000;background:#fff;text-align:left;vertical-align:top}
+.tbk small{display:block;font:600 6.5pt Arial,sans-serif;letter-spacing:.07em;color:#000;margin-bottom:1px}.tbk b{font-size:10pt}.tbk td.r{width:27%}.tbk .mono{font-family:Consolas,monospace}
+.cover td.logo{width:36%;vertical-align:middle}.lgo{display:flex;align-items:center;gap:8px}.lgo svg{flex:none}.co b{display:block;font-size:10.5pt;line-height:1.15}.co span{display:block;font-size:7pt;margin-top:2px}.co .web{font-weight:700;letter-spacing:.03em}
+/* body */
+.body h1,.body h2,.body h3,.body h4{color:#000;break-after:avoid;page-break-after:avoid}.body h1{font-size:15pt;border-bottom:1.5pt solid #000}.body h2{font-size:12pt;border-bottom:.75pt solid #000}
+.body table{border-collapse:collapse;width:100%;margin:6pt 0}.body th,.body td{border:.75pt solid #000;padding:2px 5px;font-size:8.5pt;color:#000!important;background:#fff!important;position:static}.body th{background:#e5e5e5!important;font-weight:700}
+.body tr,.io tr,.tbk tr{break-inside:avoid;page-break-inside:avoid}.body thead,.io thead{display:table-header-group}.body tfoot,.io tfoot{display:table-row-group}
+.body td.num{text-align:right;font-family:Consolas,monospace}.body table.wide th,.body table.wide td{font-size:6pt;padding:1px 2px}
+.pill,code,.body code{background:#fff!important;color:#000!important;border:.75pt solid #000!important;font-family:Consolas,monospace;border-radius:2px;padding:0 3px}
+.callout,.sopb{border:1pt solid #000!important;border-left:4pt solid #000!important;background:#fff!important;color:#000!important;padding:4pt 8pt;margin:6pt 0;break-inside:avoid;page-break-inside:avoid}.callout b,.sopb b,.sopb .crumb{color:#000!important;background:#fff!important}.sopb i{color:#000}
+/* I/O schedule table: explicit column widths (18/32/8/12/6/12/12 = 100%) */
+.io{width:100%;table-layout:fixed;border-collapse:collapse;margin:6pt 0}
+.io th,.io td{border:.75pt solid #000;padding:2px 4px;font-size:8pt;color:#000;background:#fff;text-align:left;vertical-align:top;overflow-wrap:anywhere}.io th{background:#e5e5e5;font-weight:700;font-size:7pt;letter-spacing:.03em}.io th.r{text-align:right}
+.io td.tag{font:700 7.5pt Consolas,monospace}.io td.addr{font:7.5pt Consolas,monospace;text-align:right}.io td.al{font:7pt Consolas,monospace}
+/* sign-off: printed once, at the end of the document */
+.rv{margin-top:6mm;font-size:9pt}.signoff{margin-top:8mm;break-inside:avoid;page-break-inside:avoid}.signoff h3{font-size:10pt;margin:0 0 3mm;color:#000}.tbk.sg td,.tbk.sg th{height:10mm;vertical-align:middle}.tbk.sg th{height:auto;font-size:7.5pt;text-transform:uppercase;letter-spacing:.05em}.tbk.sg td.iso{height:auto;text-align:center;font-weight:700;font-size:8pt}
