@@ -2,7 +2,7 @@
 
 @page {
   size: A4 landscape;
-  margin: 10mm 12mm;
+  margin: 12mm 15mm; /* Page margins: Top/Bottom 12mm, Left/Right 15mm */
 }
 
 html, body {
@@ -21,11 +21,14 @@ html, body {
   display: none !important;
 }
 
+/* Google Docs-Style Page Margin Container */
 #printArea {
   display: block !important;
-  width: 100% !important;
   box-sizing: border-box !important;
-  font: 8.5pt/1.3 Arial, Helvetica, sans-serif;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 8mm 12mm 10mm 12mm !important; /* Top, Right, Bottom, Left margin buffer */
+  font: 8.5pt/1.35 Arial, Helvetica, sans-serif;
   color: #000;
   background: #fff;
 }
@@ -153,7 +156,7 @@ html, body {
   margin: 0 4px;
 }
 
-/* Standard Tables (e.g. Summary) */
+/* Standard Tables (Summary) */
 .body table:not(.io):not(.tbk) {
   border-collapse: collapse;
   width: 100% !important;
@@ -259,8 +262,8 @@ html, body {
 .signoff-wrapper {
   page-break-inside: avoid !important;
   break-inside: avoid !important;
-  margin-top: 5mm;
-  padding-top: 6mm;
+  margin-top: 6mm;
+  padding-top: 4mm;
   width: 100% !important;
 }
 
