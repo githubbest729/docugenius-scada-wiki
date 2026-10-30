@@ -1,24 +1,385 @@
-/* DocuGenius print dossier. Orientation, margins, running header and page numbers are injected per document into <style id="pgstyle"> by Exp.print(). */
-@page{size:A4 portrait;margin:15mm 12mm}
-html,body{background:#fff!important;color:#000!important;height:auto!important;min-height:0!important;overflow:visible!important}
-#titlebar,#layout,#pal,#toasts,#modal,#installBtn{display:none!important}
-#printArea{display:block!important;height:auto;overflow:visible;font:9.5pt/1.4 Arial,Helvetica,sans-serif;color:#000}
-#printArea.print-landscape{font-size:8.5pt}
-/* cover title block (page 1 only: it is in the normal flow, not a repeating header) */
-.tbk{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 5mm}
-.tbk td,.tbk th{border:1pt solid #000;padding:3px 7px;font-size:9pt;color:#000;background:#fff;text-align:left;vertical-align:top}
-.tbk small{display:block;font:600 6.5pt Arial,sans-serif;letter-spacing:.07em;color:#000;margin-bottom:1px}.tbk b{font-size:10pt}.tbk td.r{width:27%}.tbk .mono{font-family:Consolas,monospace}
-.cover td.logo{width:36%;vertical-align:middle}.lgo{display:flex;align-items:center;gap:8px}.lgo svg{flex:none}.co b{display:block;font-size:10.5pt;line-height:1.15}.co span{display:block;font-size:7pt;margin-top:2px}.co .web{font-weight:700;letter-spacing:.03em}
-/* body */
-.body h1,.body h2,.body h3,.body h4{color:#000;break-after:avoid;page-break-after:avoid}.body h1{font-size:15pt;border-bottom:1.5pt solid #000}.body h2{font-size:12pt;border-bottom:.75pt solid #000}
-.body table{border-collapse:collapse;width:100%;margin:6pt 0}.body th,.body td{border:.75pt solid #000;padding:2px 5px;font-size:8.5pt;color:#000!important;background:#fff!important;position:static}.body th{background:#e5e5e5!important;font-weight:700}
-.body tr,.io tr,.tbk tr{break-inside:avoid;page-break-inside:avoid}.body thead,.io thead{display:table-header-group}.body tfoot,.io tfoot{display:table-row-group}
-.body td.num{text-align:right;font-family:Consolas,monospace}.body table.wide th,.body table.wide td{font-size:6pt;padding:1px 2px}
-.pill,code,.body code{background:#fff!important;color:#000!important;border:.75pt solid #000!important;font-family:Consolas,monospace;border-radius:2px;padding:0 3px}
-.callout,.sopb{border:1pt solid #000!important;border-left:4pt solid #000!important;background:#fff!important;color:#000!important;padding:4pt 8pt;margin:6pt 0;break-inside:avoid;page-break-inside:avoid}.callout b,.sopb b,.sopb .crumb{color:#000!important;background:#fff!important}.sopb i{color:#000}
-/* I/O schedule table: explicit column widths (18/32/8/12/6/12/12 = 100%) */
-.io{width:100%;table-layout:fixed;border-collapse:collapse;margin:6pt 0}
-.io th,.io td{border:.75pt solid #000;padding:2px 4px;font-size:8pt;color:#000;background:#fff;text-align:left;vertical-align:top;overflow-wrap:anywhere}.io th{background:#e5e5e5;font-weight:700;font-size:7pt;letter-spacing:.03em}.io th.r{text-align:right}
-.io td.tag{font:700 7.5pt Consolas,monospace}.io td.addr{font:7.5pt Consolas,monospace;text-align:right}.io td.al{font:7pt Consolas,monospace}
-/* sign-off: printed once, at the end of the document */
-.rv{margin-top:6mm;font-size:9pt}.signoff{margin-top:8mm;break-inside:avoid;page-break-inside:avoid}.signoff h3{font-size:10pt;margin:0 0 3mm;color:#000}.tbk.sg td,.tbk.sg th{height:10mm;vertical-align:middle}.tbk.sg th{height:auto;font-size:7.5pt;text-transform:uppercase;letter-spacing:.05em}.tbk.sg td.iso{height:auto;text-align:center;font-weight:700;font-size:8pt}
+/* DocuGenius print dossier - Industrial Grade (A4 Portrait & Landscape) */
+@page {
+  size: A4 portrait;
+  margin: 12mm 12mm;
+}
+
+html, body {
+  background: #fff !important;
+  color: #000 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+#titlebar, #layout, #pal, #toasts, #modal, #installBtn, .editor-bar, .no-print {
+  display: none !important;
+}
+
+#printArea {
+  display: block !important;
+  height: auto;
+  overflow: visible;
+  font: 9pt/1.35 Arial, Helvetica, sans-serif;
+  color: #000;
+  background: #fff;
+}
+
+#printArea.print-landscape {
+  font-size: 8pt;
+}
+
+/* Master Sheet Layout: Handles repeating headers without duplicate cover blocks */
+.master-sheet {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.master-sheet > thead {
+  display: table-header-group;
+}
+
+.master-sheet > tbody {
+  display: table-row-group;
+}
+
+.master-sheet > thead > tr > td,
+.master-sheet > tbody > tr > td {
+  border: none;
+  padding: 0;
+  background: #fff;
+}
+
+/* Running Header for Pages 2+ */
+.running-header-row {
+  height: 8mm;
+}
+
+.running-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 0.75pt solid #000;
+  padding-bottom: 1.5mm;
+  margin-bottom: 3mm;
+  font-size: 7.5pt;
+  font-family: Arial, sans-serif;
+  color: #000;
+}
+
+.running-header .rh-brand {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.running-header .rh-doc {
+  font-family: Consolas, monospace;
+}
+
+.running-header .rh-rev {
+  font-weight: 700;
+}
+
+/* Engineering Title Block (Page 1) */
+.tbk {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin: 0 0 4mm 0;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.tbk td, .tbk th {
+  border: 1pt solid #000;
+  padding: 3px 6px;
+  font-size: 8pt;
+  color: #000;
+  background: #fff;
+  text-align: left;
+  vertical-align: top;
+}
+
+.tbk small {
+  display: block;
+  font: 700 6pt Arial, sans-serif;
+  letter-spacing: 0.06em;
+  color: #000;
+  margin-bottom: 1px;
+  text-transform: uppercase;
+}
+
+.tbk b {
+  font-size: 8.5pt;
+  color: #000;
+}
+
+.tbk td.r {
+  width: 25%;
+}
+
+.tbk .mono {
+  font-family: Consolas, monospace;
+}
+
+.cover td.logo {
+  width: 38%;
+  vertical-align: middle;
+}
+
+.lgo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.co b {
+  display: block;
+  font-size: 9pt;
+  line-height: 1.15;
+}
+
+.co span {
+  display: block;
+  font-size: 6.5pt;
+  margin-top: 1px;
+}
+
+.co .web {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+/* Document Body Elements */
+.body {
+  width: 100%;
+}
+
+.body h1, .body h2, .body h3, .body h4 {
+  color: #000;
+  break-after: avoid;
+  page-break-after: avoid;
+  margin-top: 8pt;
+  margin-bottom: 4pt;
+}
+
+.body h1 {
+  font-size: 13pt;
+  border-bottom: 1.25pt solid #000;
+  padding-bottom: 2px;
+}
+
+.body h2 {
+  font-size: 10.5pt;
+  border-bottom: 0.75pt solid #000;
+  padding-bottom: 1px;
+}
+
+.body h3 {
+  font-size: 9.5pt;
+}
+
+.body p {
+  margin: 3pt 0 5pt;
+}
+
+/* Standard Tables inside Narrative */
+.body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 5pt 0;
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+.body th, .body td {
+  border: 0.75pt solid #000;
+  padding: 2.5px 5px;
+  font-size: 7.5pt;
+  color: #000 !important;
+  background: #fff !important;
+  vertical-align: top;
+}
+
+.body th {
+  background: #f0f0f0 !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.body tr {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+.body thead {
+  display: table-header-group;
+}
+
+.body td.num {
+  text-align: right;
+  font-family: Consolas, monospace;
+}
+
+.body table.wide th, .body table.wide td {
+  font-size: 6.5pt;
+  padding: 1.5px 3px;
+}
+
+/* Badges & Monospace Tags */
+.pill, code, .body code {
+  background: #fff !important;
+  color: #000 !important;
+  border: 0.75pt solid #000 !important;
+  font-family: Consolas, monospace;
+  font-size: 7.5pt;
+  border-radius: 2px;
+  padding: 0 3px;
+  display: inline-block;
+}
+
+/* Callout Alerts (Danger, Interlock, Operator Action) */
+.callout, .sopb {
+  border: 0.75pt solid #000 !important;
+  border-left: 3.5pt solid #000 !important;
+  background: #fff !important;
+  color: #000 !important;
+  padding: 4pt 6pt;
+  margin: 5pt 0;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.callout b, .sopb b, .sopb .crumb {
+  color: #000 !important;
+  background: #fff !important;
+  font-size: 8pt;
+}
+
+.sopb i {
+  color: #000;
+  margin: 0 4px;
+}
+
+/* Dedicated I/O Schedule Table */
+.io {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 4pt 0 6pt;
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+.io th, .io td {
+  border: 0.75pt solid #000;
+  padding: 2.5px 4px;
+  font-size: 7.5pt;
+  color: #000;
+  background: #fff;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: break-word;
+}
+
+.io th {
+  background: #f0f0f0 !important;
+  font-weight: 700;
+  font-size: 6.5pt;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.io th.r {
+  text-align: right;
+}
+
+.io td.tag {
+  font: 700 7pt Consolas, monospace;
+}
+
+.io td.type {
+  font-family: Consolas, monospace;
+  text-align: center;
+}
+
+.io td.addr {
+  font: 7pt Consolas, monospace;
+  text-align: right;
+}
+
+.io td.al {
+  font: 6.5pt Consolas, monospace;
+  text-align: center;
+}
+
+.io td.center {
+  text-align: center;
+}
+
+.io tr {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+.io thead {
+  display: table-header-group;
+}
+
+/* Document Control & Sign-Off Section */
+.signoff-wrapper {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  margin-top: 5mm;
+}
+
+.rv {
+  margin: 3mm 0 2mm;
+  font-size: 7.5pt;
+}
+
+.signoff h3 {
+  font-size: 8.5pt;
+  margin: 0 0 2mm;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.tbk.sg {
+  margin-bottom: 2mm;
+}
+
+.tbk.sg td, .tbk.sg th {
+  height: 8mm;
+  vertical-align: middle;
+}
+
+.tbk.sg th {
+  height: auto;
+  font-size: 6.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #f0f0f0 !important;
+}
+
+.tbk.sg td.iso {
+  height: auto;
+  text-align: center;
+  font-weight: 700;
+  font-size: 7pt;
+  padding: 3px;
+  background: #f7f7f7 !important;
+}
+
+.sig-line {
+  display: inline-block;
+  width: 85%;
+  border-bottom: 0.75pt dashed #444;
+  height: 12px;
+}
