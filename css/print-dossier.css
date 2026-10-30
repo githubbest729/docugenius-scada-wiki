@@ -1,7 +1,7 @@
 /* DocuGenius Industrial Print Dossier */
 
 @page {
-  size: A4 portrait;
+  size: A4 landscape;
   margin: 10mm 12mm;
 }
 
@@ -176,7 +176,7 @@ html, body {
   text-transform: uppercase;
 }
 
-/* Dedicated I/O Schedule Table - Bulletproof Chromium Multi-Page Splitting */
+/* Dedicated I/O Schedule Table */
 .io {
   width: 100% !important;
   border-collapse: collapse;
@@ -260,6 +260,7 @@ html, body {
   page-break-inside: avoid !important;
   break-inside: avoid !important;
   margin-top: 5mm;
+  padding-top: 6mm;
   width: 100% !important;
 }
 
